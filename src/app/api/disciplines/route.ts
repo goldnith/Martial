@@ -1,0 +1,7 @@
+import { NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+const text=(v:unknown)=>String(v??'').trim();
+export async function GET(){try{return NextResponse.json(await prisma.discipline.findMany({where:{active:true},include:{belts:{where:{active:true},orderBy:{sortOrder:'asc'}}},orderBy:{createdAt:'asc'}}));}catch{return NextResponse.json({error:'Unable to load belt grading modules.'},{status:500});}}
+export async function POST(req:Request){try{const b=await req.json();const name=text(b.name);if(!name)return NextResponse.json({error:'Discipline name is required.'},{status:400});return NextResponse.json(await prisma.discipline.create({data:{name}}),{status:201});}catch{return NextResponse.json({error:'Unable to create discipline.'},{status:500});}}
+export async function PATCH(req:Request){try{const b=await req.json();const id=text(b.id),name=text(b.name);if(!id||!name)return NextResponse.json({error:'Discipline id and name are required.'},{status:400});return NextResponse.json(await prisma.discipline.update({where:{id},data:{name}}));}catch{return NextResponse.json({error:'Unable to update discipline.'},{status:500});}}
+export async function DELETE(req:Request){try{const id=new URL(req.url).searchParams.get('id');if(!id)return NextResponse.json({error:'Discipline id is required.'},{status:400});await prisma.discipline.update({where:{id},data:{active:false}});return NextResponse.json({ok:true});}catch{return NextResponse.json({error:'Unable to delete discipline.'},{status:500});}}

@@ -1,0 +1,118 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Master {
+  id        String   @id @default(cuid())
+  name      String
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  branches  Branch[]
+  students  Student[]
+}
+
+model Branch {
+  id             String   @id @default(cuid())
+  masterId       String?
+  name           String
+  location       String   @default("")
+  shift          String   @default("")
+  defaultFee     Int      @default(0)
+  active         Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  master         Master?  @relation(fields: [masterId], references: [id], onDelete: SetNull)
+  students       Student[]
+  attendance     Attendance[]
+  @@index([masterId])
+}
+
+model Student {
+  id             String   @id
+  name           String
+  dob            DateTime?
+  school         String   @default("")
+  standard       String   @default("")
+  address        String   @default("")
+  fatherName     String   @default("")
+  aadharNumber   String   @default("")
+  parentNumber   String   @default("")
+  customFee      Int?
+  active         Boolean  @default(true)
+  masterId       String?
+  branchId       String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  master         Master?  @relation(fields: [masterId], references: [id], onDelete: SetNull)
+  branch         Branch?  @relation(fields: [branchId], references: [id], onDelete: SetNull)
+  attendance     Attendance[]
+  payments       FeePayment[]
+  beltAwards     StudentBelt[]
+  @@index([masterId])
+  @@index([branchId])
+}
+
+model Attendance {
+  id        String   @id @default(cuid())
+  studentId String
+  branchId  String?
+  date      DateTime
+  present   Boolean
+  createdAt DateTime @default(now())
+  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  branch    Branch?  @relation(fields: [branchId], references: [id], onDelete: SetNull)
+  @@unique([studentId, date])
+  @@index([branchId, date])
+}
+
+model FeePayment {
+  id            String   @id @default(cuid())
+  studentId     String
+  amount        Int
+  paymentDate   DateTime @default(now())
+  feeMonth      Int
+  feeYear       Int
+  paymentMethod String?
+  note          String?
+  createdAt     DateTime @default(now())
+  student       Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  @@index([studentId, feeYear, feeMonth])
+}
+
+model Discipline {
+  id        String      @id @default(cuid())
+  name      String
+  active    Boolean     @default(true)
+  createdAt DateTime    @default(now())
+  belts     BeltLevel[]
+}
+
+model BeltLevel {
+  id          String       @id @default(cuid())
+  disciplineId String
+  name        String
+  sortOrder   Int          @default(0)
+  active      Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+  discipline  Discipline   @relation(fields: [disciplineId], references: [id], onDelete: Cascade)
+  awards      StudentBelt[]
+  @@index([disciplineId, sortOrder])
+}
+
+model StudentBelt {
+  id          String    @id @default(cuid())
+  studentId   String
+  beltLevelId String
+  awardedAt   DateTime
+  location    String    @default("")
+  note        String    @default("")
+  createdAt   DateTime  @default(now())
+  student     Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  beltLevel   BeltLevel @relation(fields: [beltLevelId], references: [id], onDelete: Cascade)
+  @@unique([studentId, beltLevelId])
+  @@index([beltLevelId])
+}
