@@ -1,0 +1,19 @@
+{
+  "name": "MartialTrack",
+  "short_name": "MartialTrack",
+  "description": "Attendance, student and fee management for Traditional Martial Arts And Sports Academy",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#07152f",
+  "theme_color": "#07152f",
+  "icons": [
+    {
+      "src": "/academy-logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any"
+    }
+  ]
+}
