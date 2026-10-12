@@ -121,15 +121,17 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const b = await req.json();
-    const id = text(b.id).toUpperCase();
+    const suppliedId = text(b.id).toUpperCase();
     const d = data(b);
 
-    if (!id || !d.name) {
+    if (!d.name) {
       return NextResponse.json(
-        { error: 'Student ID and Name are required.' },
+        { error: 'Student Name is required.' },
         { status: 400 }
       );
     }
+
+    const id = suppliedId || `STU-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
 
     const conflict = await validate(d.masterId, d.branchId);
 
@@ -148,7 +150,7 @@ export async function POST(req: Request) {
 
     if (e?.code === 'P2002') {
       return NextResponse.json(
-        { error: 'Student ID already exists.' },
+        { error: 'Student ID already exists. Please try again.' },
         { status: 409 }
       );
     }
@@ -168,7 +170,7 @@ export async function PATCH(req: Request) {
 
     if (!id || !d.name) {
       return NextResponse.json(
-        { error: 'Student ID and Name are required.' },
+        { error: 'Student ID and Name are required when editing a student.' },
         { status: 400 }
       );
     }
