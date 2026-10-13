@@ -22,23 +22,20 @@ jobs:
           s = p.read_text()
           original = s
 
-          # The early-return fragment was valid-looking JSX but left the
-          # following const statement outside a function block. Make the
-          # early return an explicit block so SWC parses the function safely.
-          s = s.replace('if(!p.selected)return <>', 'if(!p.selected){return <>', 1)
-
-          # Remove the stale extra closing div from the no-selection branch.
+          # Fix the complete early-return statement. The source previously
+          # had </>; but was missing the closing } for if(!p.selected){...}.
           s = s.replace(
-              'No grading modules configured.</div></div></>;',
               'No grading modules configured.</div></>;',
+              'No grading modules configured.</div></>;}',
               1,
           )
 
+          # Keep this idempotent in case a later push already contains it.
           if s == original:
               print('No GradingView repair needed.')
           else:
               p.write_text(s)
-              print('Repaired GradingView JSX.')
+              print('Repaired missing GradingView closing brace.')
           PY
       - name: Commit repair
         shell: bash
@@ -50,5 +47,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add src/app/page.tsx
-          git commit -m "Fix GradingView JSX parsing"
+          git commit -m "Fix missing GradingView closing brace"
           git push
