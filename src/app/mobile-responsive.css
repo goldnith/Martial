@@ -6,6 +6,25 @@
     overflow-x: hidden;
   }
 
+  /* Card grids should collapse one under the next when the viewport is narrow. */
+  .grid.cards,
+  .grid.masters,
+  .grid.branch-grid,
+  .fee-panel-grid,
+  .dashboard-panel-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    width: 100%;
+  }
+
+  .grid.cards > *,
+  .grid.masters > *,
+  .grid.branch-grid > *,
+  .fee-panel-grid > *,
+  .dashboard-panel-grid > * {
+    min-width: 0;
+    max-width: 100%;
+  }
+
   /* Fees & Payments: stack the two desktop columns on phones. */
   .fee-layout {
     grid-template-columns: minmax(0, 1fr) !important;
