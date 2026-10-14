@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import PwaRegister from "./pwa-register";
 import "./globals.css";
+import "./mobile-responsive.css";
 
 export const metadata: Metadata = {
   title: "MartialTrack | Traditional Martial Arts Academy",
