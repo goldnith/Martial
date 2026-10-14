@@ -1,0 +1,68 @@
+/* MartialTrack mobile layout fixes */
+@media (max-width: 900px) {
+  .main {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  /* Fees & Payments: stack the two desktop columns on phones. */
+  .fee-layout {
+    grid-template-columns: minmax(0, 1fr) !important;
+    width: 100%;
+  }
+
+  .fee-layout > *,
+  .payment-form,
+  .fee-layout .card {
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* Attendance/student history modals must never create horizontal scrolling. */
+  .modal {
+    width: 100%;
+    max-width: calc(100vw - 24px);
+    min-width: 0;
+    overflow-x: hidden;
+  }
+
+  .modal > * {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .modal .filters,
+  .modal .grading-filters {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .modal .field {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  /* Attendance summary cards become a clean 2 x 2 grid on small screens. */
+  .modal .cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .modal .table-wrap,
+  .modal .table {
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  /* Keep action rows inside the viewport. */
+  .modal .form-actions,
+  .modal .attendance-actions {
+    flex-wrap: wrap;
+  }
+
+  .modal .form-actions .btn,
+  .modal .attendance-actions .btn {
+    max-width: 100%;
+  }
+}
